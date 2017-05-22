@@ -93,7 +93,8 @@ module.exports = function(gulp, config) {
         injectChanges: true,
         open: config.browserSync.openBrowserAtStart,
         proxy: config.browserSync.domain,
-        startPath: config.browserSync.startPath
+        startPath: config.browserSync.startPath,
+        notify: config.browserSync.hasOwnProperty('notify') ? config.browserSync.notify : true
       });
     }
     else {
@@ -102,7 +103,8 @@ module.exports = function(gulp, config) {
         server: {
           baseDir: config.browserSync.baseDir
         },
-        startPath: config.browserSync.startPath
+        startPath: config.browserSync.startPath,
+        notify: config.browserSync.hasOwnProperty('notify') ? config.browserSync.notify : true
       });
     }
     gulp.watch(config.paths.js, ['scripts']).on('change', browserSync.reload);
