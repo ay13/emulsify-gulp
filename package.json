@@ -1,7 +1,7 @@
 {
   "name": "emulsify-gulp",
   "description": "A collection of useful gulp tasks.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "dependencies": {
     "breakpoint-sass": "^2.7.0",
     "browser-sync": "^2.11.0",
