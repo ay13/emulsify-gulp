@@ -107,9 +107,13 @@ module.exports = function(gulp, config) {
         notify: config.browserSync.hasOwnProperty('notify') ? config.browserSync.notify : true
       });
     }
-    gulp.watch(config.paths.js, ['scripts']).on('change', browserSync.reload);
-    gulp.watch(config.paths.styleguide_js, ['styleguide-scripts']).on('change', browserSync.reload);
-    gulp.watch(config.paths.sass + '/**/*.scss', ['css']).on('change', browserSync.reload);
+    gulp.watch(config.paths.js, ['scripts']);
+    gulp.watch(config.paths.styleguide_js, ['styleguide-scripts']);
+    gulp.watch(config.paths.sass + '/**/*.scss', ['css']);
+
+    browserSync.watch(config.browserSync.baseDir + 'dist/*.css').on('change', browserSync.reload);
+    browserSync.watch(config.browserSync.baseDir + 'dist/*.js').on('change', browserSync.reload);
+    browserSync.watch(config.browserSync.startPath + '**/*.html').on('change', browserSync.reload);
   });
 
   /**
