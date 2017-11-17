@@ -35,46 +35,49 @@ module.exports = function(gulp, config) {
   require('./gulp-tasks/gulp-css.js')(gulp, config, tasks, browserSync);
 
   // Tests
-  require('./gulp-tasks/gulp-tests.js')(gulp, config, tasks);
+  // require('./gulp-tasks/gulp-tests.js')(gulp, config, tasks);
 
   /**
    * Script Task
    */
-  gulp.task('scripts', function () {
-    return gulp.src(config.paths.js)
-      // Concatenate everything within the JavaScript folder.
-      .pipe(concat('scripts.js'))
-      .pipe(uglify())
-      .pipe(gulp.dest(config.paths.dist_js));
+  gulp.task('scripts', function() {
+    return (gulp
+        .src(config.paths.js)
+        // Concatenate everything within the JavaScript folder.
+        .pipe(concat('scripts.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest(config.paths.dist_js)) );
   });
 
-  gulp.task('styleguide-scripts', function () {
-    return gulp.src(config.paths.styleguide_js)
-      // Concatenate everything within the JavaScript folder.
-      .pipe(concat('scripts-styleguide.js'))
-      .pipe(gulp.dest(config.paths.dist_js));
+  gulp.task('styleguide-scripts', function() {
+    return (gulp
+        .src(config.paths.styleguide_js)
+        // Concatenate everything within the JavaScript folder.
+        .pipe(concat('scripts-styleguide.js'))
+        .pipe(gulp.dest(config.paths.dist_js)) );
   });
 
   /**
    * Task for minifying images.
    */
-  gulp.task('imagemin', function () {
-    return gulp.src(config.paths.img + '/**/*')
-      .pipe(imagemin({
-        progressive: true,
-        svgoPlugins: [
-          {removeViewBox: false},
-          {cleanupIDs: false}
-        ]
-      }))
+  gulp.task('imagemin', function() {
+    return gulp
+      .src(config.paths.img + '/**/*')
+      .pipe(
+        imagemin({
+          progressive: true,
+          svgoPlugins: [{ removeViewBox: false }, { cleanupIDs: false }]
+        })
+      )
       .pipe(gulp.dest(config.paths.dist_img));
   });
 
   /**
    * Task for generating icon colors/png fallbacks from svg.
    */
-  gulp.task('icons', function () {
-    return gulp.src('**/*.svg', {cwd: config.paths.img + '/icons/src'})
+  gulp.task('icons', function() {
+    return gulp
+      .src('**/*.svg', { cwd: config.paths.img + '/icons/src' })
       .pipe(svgSprite(config.iconConfig))
       .pipe(gulp.dest(config.themeDir + '/images/icons'));
   });
@@ -87,34 +90,47 @@ module.exports = function(gulp, config) {
   /**
    * Task for running browserSync.
    */
-  gulp.task('serve', ['css', 'scripts', 'styleguide-scripts', 'watch:pl'], function () {
-    if (config.browserSync.domain) {
-      browserSync.init({
-        injectChanges: true,
-        open: config.browserSync.openBrowserAtStart,
-        proxy: config.browserSync.domain,
-        startPath: config.browserSync.startPath,
-        notify: config.browserSync.hasOwnProperty('notify') ? config.browserSync.notify : true
-      });
-    }
-    else {
-      browserSync.init({
-        injectChanges: true,
-        server: {
-          baseDir: config.browserSync.baseDir
-        },
-        startPath: config.browserSync.startPath,
-        notify: config.browserSync.hasOwnProperty('notify') ? config.browserSync.notify : true
-      });
-    }
-    gulp.watch(config.paths.js, ['scripts']);
-    gulp.watch(config.paths.styleguide_js, ['styleguide-scripts']);
-    gulp.watch(config.paths.sass + '/**/*.scss', ['css']);
+  gulp.task(
+    'serve',
+    ['css', 'scripts', 'styleguide-scripts', 'watch:pl'],
+    function() {
+      if (config.browserSync.domain) {
+        browserSync.init({
+          injectChanges: true,
+          open: config.browserSync.openBrowserAtStart,
+          proxy: config.browserSync.domain,
+          startPath: config.browserSync.startPath,
+          notify: config.browserSync.hasOwnProperty('notify')
+            ? config.browserSync.notify
+            : true
+        });
+      } else {
+        browserSync.init({
+          injectChanges: true,
+          server: {
+            baseDir: config.browserSync.baseDir
+          },
+          startPath: config.browserSync.startPath,
+          notify: config.browserSync.hasOwnProperty('notify')
+            ? config.browserSync.notify
+            : true
+        });
+      }
+      gulp.watch(config.paths.js, ['scripts']);
+      gulp.watch(config.paths.styleguide_js, ['styleguide-scripts']);
+      gulp.watch(config.paths.sass + '/**/*.scss', ['css']);
 
-    browserSync.watch(config.browserSync.baseDir + 'dist/*.css').on('change', browserSync.reload);
-    browserSync.watch(config.browserSync.baseDir + 'dist/*.js').on('change', browserSync.reload);
-    browserSync.watch(config.browserSync.startPath + '**/*.html').on('change', browserSync.reload);
-  });
+      browserSync
+        .watch(config.browserSync.baseDir + 'dist/*.css')
+        .on('change', browserSync.reload);
+      browserSync
+        .watch(config.browserSync.baseDir + 'dist/*.js')
+        .on('change', browserSync.reload);
+      browserSync
+        .watch(config.browserSync.startPath + '**/*.html')
+        .on('change', browserSync.reload);
+    }
+  );
 
   /**
    * Theme task declaration
@@ -131,17 +147,24 @@ module.exports = function(gulp, config) {
   /**
    * Theme task declaration
    */
-  gulp.task('build', ['imagemin', 'clean', 'scripts', 'styleguide-scripts', 'css', 'icons']);
+  gulp.task('build', [
+    'imagemin',
+    'clean',
+    'scripts',
+    'styleguide-scripts',
+    'css',
+    'icons'
+  ]);
 
   /**
    * Deploy
    */
-  gulp.task('deploy', function () {
-    return gulp.src([
-      config.paths.dist_js + '/**/*',
-      config.paths.pattern_lab + '/**/*'
-    ], { base: config.themeDir } )
-    .pipe(ghPages());
+  gulp.task('deploy', function() {
+    return gulp
+      .src(
+        [config.paths.dist_js + '/**/*', config.paths.pattern_lab + '/**/*'],
+        { base: config.themeDir }
+      )
+      .pipe(ghPages());
   });
-
 };
